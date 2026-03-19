@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Bilent - Sistema de gestão para pequenos negócios. Controle de vendas, estoque, clientes e financeiro organizados de forma simples.">
+    <title>Bilent | Controle seu negócio em um só lugar</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/bilent.css">
+    <style>
+        /* Initial state for animations - JS will handle visibility */
+        .initial-hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, visibility 0.8s ease, transform 0.8s ease;
+        }
+        
+        /* Fallback for users with JS disabled or if JS takes too long */
+        .no-js .initial-hidden, .revealed {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: none !important;
+        }
+
+        /* -------------------------------------
+           NEW ADVANCED SECTIONS STYLES
+        ------------------------------------- */
+
+        /* IA Demo Chat */
+        .demo-grid-modern {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+        @media (max-width: 900px) {
+            .demo-grid-modern { grid-template-columns: 1fr; }
+        }
+        .demo-glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        body.dark-mode .demo-glass-card {
+            background: rgba(10, 10, 10, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .demo-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding-bottom: 1rem;
+        }
+        body.dark-mode .demo-header { border-bottom-color: rgba(255,255,255,0.1); }
+        .demo-avatar {
+            width: 44px; height: 44px;
+            background: var(--grad-primary);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 1.25rem;
+        }
+        .demo-header h4 { margin: 0; font-size: 1.1rem; color: var(--clr-neutral-900); }
+        .demo-header span { font-size: 0.85rem; color: var(--clr-neutral-500); }
+        
+        #demo-chat-container {
+            min-height: 250px;
+            max-height: 350px;
+            overflow-y: auto;
+            display: flex; flex-direction: column; gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-right: 0.5rem;
+        }
+        /* Custom Scrollbar for chat */
+        #demo-chat-container::-webkit-scrollbar { width: 6px; }
+        #demo-chat-container::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        body.dark-mode #demo-chat-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
+        
+        .chat-message.ai .msg-bubble {
+            align-self: flex-start;
+            background: var(--clr-neutral-100);
+            color: var(--clr-neutral-800);
+            padding: 1rem 1.5rem;
+            border-radius: 1.5rem 1.5rem 1.5rem 0;
+            max-width: 90%;
+            font-size: 0.95rem;
+            border: 1px solid var(--clr-neutral-200);
+        }
+        body.dark-mode .chat-message.ai .msg-bubble {
+            background: var(--clr-neutral-100);
+            color: var(--clr-neutral-800);
+            border-color: var(--clr-neutral-200);
+        }
+        
+        .demo-input-area { position: relative; }
+        #demo-input {
+            width: 100%;
+            padding: 1.25rem;
+            padding-right: 4rem;
+            background: var(--clr-white);
+            border: 1px solid var(--clr-neutral-200);
+            color: var(--clr-neutral-900);
+            border-radius: var(--radius-full);
+            font-size: 1rem;
+            font-family: var(--font-main);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        body.dark-mode #demo-input {
+            background: var(--clr-neutral-50);
+            border-color: var(--clr-neutral-200);
+            color: var(--clr-neutral-900);
+        }
+        .btn-send {
+            position: absolute; right: 0.5rem; top: 0.5rem; bottom: 0.5rem;
+            width: 44px; border-radius: 50%;
+            background: var(--clr-primary-600); color: #fff;
+            border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; transition: background 0.3s;
+        }
+        .btn-send:hover { background: var(--clr-primary-700); transform: scale(1.05); }
+
+        .ia-features li {
+            display: flex; align-items: flex-start; gap: 1rem;
+            margin-bottom: 1.5rem; padding: 1rem;
+            background: var(--clr-white); border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm); transition: transform 0.3s;
+        }
+        body.dark-mode .ia-features li { background: var(--clr-bg-card); border: 1px solid var(--clr-neutral-200); }
+        .ia-features li:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+        .ia-icon {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(0, 230, 118, 0.1); color: #00e676;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.25rem; flex-shrink: 0;
+        }
+        .ia-text strong { display: block; font-size: 1.1rem; color: var(--clr-neutral-900); margin-bottom: 0.25rem; }
+        .ia-text span { color: var(--clr-neutral-600); font-size: 0.95rem; line-height: 1.4; display: block; }
+
+        /* Calculator */
+        .calc-glass-box {
+            background: var(--clr-white);
+            border: 1px solid var(--clr-neutral-200);
+            border-radius: var(--radius-xl);
+            padding: 3rem;
+            box-shadow: var(--shadow-lg);
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 4rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+        body.dark-mode .calc-glass-box { background: var(--clr-bg-card); border-color: var(--clr-neutral-200); }
+        @media (max-width: 900px) { .calc-glass-box { grid-template-columns: 1fr; padding: 2rem; gap: 2rem; } }
+        
+        .range-group { margin-bottom: 2.5rem; }
+        .range-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .range-header label { font-weight: 600; color: var(--clr-neutral-800); font-size: 1.1rem; }
+        .range-header span { font-weight: 800; color: var(--clr-primary-600); font-size: 1.25rem; background: var(--clr-primary-50); padding: 0.25rem 0.75rem; border-radius: var(--radius-full); }
+        body.dark-mode .range-header span { background: rgba(124, 58, 237, 0.15); }
+        
+        input[type=range].modern-slider {
+            -webkit-appearance: none; appearance: none; width: 100%; background: transparent;
+        }
+        input[type=range].modern-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; height: 24px; width: 24px;
+            border-radius: 50%; background: var(--clr-primary-600);
+            cursor: pointer; margin-top: -8px; box-shadow: 0 0 10px rgba(124,58,237,0.5);
+        }
+        input[type=range].modern-slider::-webkit-slider-runnable-track {
+            width: 100%; height: 8px; cursor: pointer;
+            background: var(--clr-neutral-200); border-radius: 4px;
+        }
+        input[type=range].modern-slider:focus { outline: none; }
+
+        .calc-result-box {
+            background: var(--clr-bg-deep);
+            border-radius: var(--radius-lg);
+            padding: 3rem; text-align: center;
+            border: 2px dashed rgba(239, 68, 68, 0.3);
+            transition: all 0.3s;
+        }
+        body.dark-mode .calc-result-box { background: rgba(239, 68, 68, 0.05); }
+        .calc-result-box h5 { font-size: 1.2rem; color: var(--clr-neutral-600); font-weight: 500; margin-bottom: 1rem; }
+        .calc-money { font-size: 4rem; font-weight: 800; color: #ef4444; line-height: 1; margin-bottom: 1.5rem; letter-spacing: -0.02em; transition: all 0.2s; }
+        .calc-money span { font-size: 1.5rem; font-weight: 600; opacity: 0.8; }
+        .calc-result-box p { color: var(--clr-neutral-500); font-size: 0.95rem; margin-bottom: 2rem; }
+
+        /* Comparison Table */
+        .comp-table-glass {
+            background: var(--clr-white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            border: 1px solid var(--clr-neutral-200);
+            margin-top: 3rem;
+            max-width: 900px;
+            margin-left: auto; margin-right: auto;
+        }
+        body.dark-mode .comp-table-glass { background: var(--clr-bg-card); border-color: var(--clr-neutral-200); }
+        
+        .comp-header, .comp-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            align-items: center;
+        }
+        @media (max-width: 600px) {
+            .comp-header, .comp-row { grid-template-columns: 1fr 1fr 1fr 1fr; }
+            .feature-col { font-size: 0.8rem !important; }
+            .old-way, .mid-way, .bilent-way { font-size: 0.75rem !important; }
+        }
+        .comp-header {
+            background: var(--clr-neutral-50);
+            padding: 1.5rem;
+            border-bottom: 2px solid var(--clr-neutral-200);
+        }
+        body.dark-mode .comp-header { background: var(--clr-neutral-100); }
+        .comp-row {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--clr-neutral-100);
+            transition: background 0.3s;
+        }
+        body.dark-mode .comp-row { border-bottom-color: var(--clr-neutral-100); }
+        .comp-row:hover { background: var(--clr-neutral-50); }
+        body.dark-mode .comp-row:hover { background: rgba(255,255,255,0.02); }
+        .comp-row:last-child { border-bottom: none; }
+        
+        .feature-col { font-weight: 600; font-size: 1.1rem; color: var(--clr-neutral-800); }
+        .old-way { text-align: center; color: var(--clr-neutral-500); font-weight: 500; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+        .old-way i { color: #ef4444; font-size: 1.5rem; }
+        .mid-way { text-align: center; color: var(--clr-neutral-600); font-weight: 500; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+        .mid-way i { color: #f59e0b; font-size: 1.5rem; }
+        .bilent-way { text-align: center; color: var(--clr-primary-600); font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+        .bilent-way i { color: #00e676; font-size: 1.5rem; }
+        
+        .comp-header .old-way { color: var(--clr-neutral-800); flex-direction: row; justify-content: center; }
+        .comp-header .mid-way { color: var(--clr-neutral-800); flex-direction: row; justify-content: center; }
+        .comp-header .bilent-way { color: var(--clr-primary-600); flex-direction: row; justify-content: center; font-size: 1.25rem; }
+
+    </style>
+</head>
+<body>
+    
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <i class="ph-fill ph-storefront"></i>
+                <span>Bilent</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#beneficios">Benefícios</a>
+                <a href="#como-funciona">Como funciona</a>
+                <a href="#showcase">Funcionalidades</a>
+                <a href="#precos">Preços</a>
+            </nav>
+            <div class="nav-actions">
+                <button id="theme-toggle-desktop" class="btn btn-icon" aria-label="Alternar modo Escuro" style="background:transparent; border:none; color:var(--clr-neutral-800); font-size:1.5rem; cursor:pointer;" onclick="toggleTheme()">
+                    <i class="ph-bold ph-moon"></i>
+                </button>
+                <a href="https://wa.me/5511999999999" target="_blank" class="btn btn-outline">Falar com Consultor</a>
+                <a href="#precos" class="btn btn-primary">Começar grátis</a>
+            </div>
+            <button class="menu-mobile" aria-label="Abrir menu">
+                <i class="ph ph-list"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Floating Nav (Pill Style) -->
+    <div class="mobile-float-nav">
+        <div class="float-nav-pill">
+            <div class="float-logo">
+                <i class="ph-fill ph-storefront"></i>
+                <span>Bilent</span>
+            </div>
+            <div class="float-actions">
+                <button id="theme-toggle" class="float-btn" aria-label="Alternar modo Escuro" onclick="toggleTheme()">
+                    <i class="ph-bold ph-moon"></i>
+                </button>
+                <button id="open-menu" class="float-btn" aria-label="Abrir menu">
+                    <i class="ph-bold ph-list"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="menu-overlay">
+        <div class="menu-content">
+            <div class="menu-header">
+                <div class="logo">
+                    <i class="ph-fill ph-storefront"></i>
+                    <span>Bilent <span class="system-tag">SYSTEM</span></span>
+                </div>
+                <button id="close-menu" class="close-btn">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+            
+            <div class="menu-list">
+                <div class="menu-item-group">
+                    <a href="#beneficios" class="menu-item">
+                        <span>Benefícios Principais</span>
+                    </a>
+                    <a href="#como-funciona" class="menu-item">
+                        <span>Como Funciona</span>
+                    </a>
+                    <a href="#showcase" class="menu-item">
+                        <span>Área de Funcionalidades</span>
+                    </a>
+                    <a href="#precos" class="menu-item">
+                        <span>Planos e Preços</span>
+                    </a>
+                    <a href="#prova-social" class="menu-item">
+                        <span>Casos de Sucesso</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="menu-footer">
+                <a href="#precos" class="btn-cta-mobile">
+                    <span class="dot"></span> Começar Agora
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero section-patterns">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title fade-in-up">
+                    Assuma o <span class="text-gradient">controle total</span> do seu negócio com IA.
+                </h1>
+                <p class="hero-subtitle fade-in-up delay-1">
+                    Gestão financeira, controle de estoque e CRM em um só lugar. Automatize suas vendas por voz ou texto e foque no que realmente importa: vender mais.
+                </p>
+                <div class="hero-actions fade-in-up delay-2">
+                    <a href="#precos" class="btn btn-primary">
+                        Começar Agora Grátis
+                    </a>
+                    <a href="https://wa.me/5511999999999" target="_blank" class="btn btn-outline">
+                        <i class="ph ph-whatsapp-logo"></i>
+                        Falar com Especialista
+                    </a>
+                </div>
+            </div>
+            
+            <div class="hero-image fade-in-up delay-1">
+                <div class="hero-image-wrapper">
+                    <!-- Layered floating elements -->
+                    <div class="floating-badge badge-1 fade-in-up">
+                        <i class="ph-fill ph-check-circle"></i>
+                        <span>Receita atualizada! 📈</span>
+                    </div>
+                    <div class="floating-badge badge-2 fade-in-up">
+                        <i class="ph-fill ph-lightning"></i>
+                        <span>IA: Venda registrada via voz.</span>
+                    </div>
+                    
+                    <div class="glow-bg"></div>
+                    <img src="assets/app_dashboard_hero.png" alt="Dashboard Bilent" class="mockup-img">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefícios -->
+    <section id="beneficios" class="section section-patterns">
+        <div class="text-outline" style="top: 10%; right: 5%;">BILENT</div>
+        <div class="container section-header text-center">
+            <span class="badge">Vantagens</span>
+            <h2>Por que escolher o Bilent?</h2>
+            <p>Tudo o que você precisa para assumir o controle total do seu negócio, sem dores de cabeça.</p>
+        </div>
+        <div class="container grids-beneficios stagger-container">
+            <!-- Beneficio 1 -->
+            <div class="card-beneficio stagger-item">
+                <div class="icon-box primary">
+                    <i class="ph-fill ph-magic-wand"></i>
+                </div>
+                <h3>Registro com IA</h3>
+                <p>Nossa inteligência artificial processa vendas por texto ou voz. Escreva como fala e o Bilent faz o resto.</p>
+            </div>
+            <!-- Beneficio 2 -->
+            <div class="card-beneficio stagger-item">
+                <div class="icon-box accent">
+                    <i class="ph-fill ph-calculator"></i>
+                </div>
+                <h3>Margem de Lucro</h3>
+                <p>Cálculo automático de custos e margem. Saiba exatamente quanto ganha em cada produto vendido.</p>
+            </div>
+            <!-- Beneficio 3 -->
+            <div class="card-beneficio stagger-item">
+                <div class="icon-box primary">
+                    <i class="ph-fill ph-chart-line-up"></i>
+                </div>
+                <h3>Financeiro Profissional</h3>
+                <p>Plano de contas, fluxo de caixa e ticket médio. Visão 360º da saúde financeira da sua empresa.</p>
+            </div>
+            <!-- Beneficio 4 -->
+            <div class="card-beneficio stagger-item">
+                <div class="icon-box accent">
+                    <i class="ph-fill ph-users-three"></i>
+                </div>
+                <h3>CRM & Vendas</h3>
+                <p>Gerencie clientes e funil de vendas. Organize sua equipe e acompanhe o desempenho em tempo real.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Como Funciona -->
+    <section id="como-funciona" class="section bg-light section-patterns">
+        <div class="container section-header text-center">
+            <span class="badge">Simplicidade</span>
+            <h2>Veja como é fácil começar</h2>
+            <p>Esqueça os sistemas complexos. O Bilent foi feito para você focar no que importa: vender mais.</p>
+        </div>
+        <div class="container steps-modern-grid stagger-container">
+            <div class="step-modern-card stagger-item">
+                <div class="step-modern-num">01</div>
+                <div class="step-modern-icon"><i class="ph-fill ph-package"></i></div>
+                <div class="step-modern-content">
+                    <h3>Cadastre seus produtos</h3>
+                    <p>Adicione seus produtos ou serviços rapidamente com nossa interface amigável.</p>
+                </div>
+            </div>
+            <div class="step-modern-card stagger-item">
+                <div class="step-modern-num">02</div>
+                <div class="step-modern-icon"><i class="ph-fill ph-shopping-cart"></i></div>
+                <div class="step-modern-content">
+                    <h3>Registre suas vendas</h3>
+                    <p>Em poucos cliques a venda está feita. O sistema baixa o estoque na hora.</p>
+                </div>
+            </div>
+            <div class="step-modern-card stagger-item">
+                <div class="step-modern-num">03</div>
+                <div class="step-modern-icon"><i class="ph-fill ph-chart-line-up"></i></div>
+                <div class="step-modern-content">
+                    <h3>Veja o lucro do negócio</h3>
+                    <p>O Bilent faz todos os cálculos automaticamente e te mostra o lucro sem mistério.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demonstração IA (NEW FEATURE) -->
+    <section id="ia-demo" class="section bg-deep section-patterns" style="position: relative; z-index: 10;">
+        <div class="container section-header text-center">
+            <span class="badge" style="background: rgba(124, 58, 237, 0.1); color: var(--clr-primary-600); border-color: rgba(124, 58, 237, 0.2);">A Mágica</span>
+            <h2>Demonstração Instantânea</h2>
+            <p>Escreva como você fala, e nossa inteligência artificial resolve tudo para você.</p>
+        </div>
+        
+        <div class="container demo-grid-modern stagger-container">
+            <div class="demo-info-modern stagger-item" style="padding-right: 2rem;">
+                <h3 style="font-size: 2.2rem; margin-bottom: 1.5rem; color: var(--clr-neutral-900);">Experimente você mesmo.</h3>
+                <p style="color: var(--clr-neutral-600); font-size: 1.15rem; margin-bottom: 2rem;">A nossa IA entende contextualmente o que você quer registrar. Não importa se há erros de digitação ou o formato.</p>
+                
+                <ul class="ia-features" style="list-style: none;">
+                    <li>
+                        <div class="ia-icon"><i class="ph-bold ph-check"></i></div>
+                        <div class="ia-text">
+                            <strong>Venda Registrada e Mapeada</strong>
+                            <span>Identifica o produto exato e a quantidade.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="ia-icon"><i class="ph-bold ph-package"></i></div>
+                        <div class="ia-text">
+                            <strong>Estoque Controlado</strong>
+                            <span>Sabe o que precisará de reposição muito em breve.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="ia-icon"><i class="ph-bold ph-money"></i></div>
+                        <div class="ia-text">
+                            <strong>Lucro no Bolso</strong>
+                            <span>Calcula imediatamente o seu ganho real naquela venda.</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="demo-interactive-wrapper stagger-item delay-1">
+                <div class="demo-glass-card">
+                    <div class="demo-header">
+                        <div class="demo-avatar">
+                            <i class="ph-fill ph-magic-wand"></i>
+                        </div>
+                        <div>
+                            <h4>Bilent AI Assistente</h4>
+                            <span>Online • Pronto para ajudar</span>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-container" id="demo-chat-container">
+                        <div class="chat-message ai fade-in-up">
+                            <div class="msg-bubble">Olá! Pode me testar. Digite uma venda abaixo.<br><br>Ex: <em>"Vendi 3 camisetas por 150 no cartão"</em></div>
+                        </div>
+                        <!-- Respostas do chat vão aqui -->
+                    </div>
+                    
+                    <form id="demo-form" class="demo-input-area fade-in-up delay-1">
+                        <input type="text" id="demo-input" placeholder="Digite uma venda...">
+                        <button type="submit" class="btn-send"><i class="ph-bold ph-paper-plane-right"></i></button>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- Funcionalidades -->
+    <section id="funcionalidades" class="section bg-white section-patterns">
+        <div class="container section-header text-center">
+            <span class="badge">Recursos</span>
+            <h2>Tudo para o seu negócio crescer</h2>
+            <p>Um sistema completo que não exige conhecimentos técnicos. Simples e direto ao ponto.</p>
+        </div>
+        <div class="container bento-grid stagger-container">
+            
+            <div class="bento-item bento-Item-1 stagger-item">
+                <i class="ph-fill ph-shopping-cart"></i>
+                <h3>Registro rápido de vendas</h3>
+                <p>Finalize vendas em segundos com nossa interface otimizada. Menos cliques, mais agilidade para você e seus clientes.</p>
+            </div>
+            
+            <div class="bento-item bento-Item-2 stagger-item">
+                <i class="ph-fill ph-package"></i>
+                <h3>Estoque automático</h3>
+                <p>O sistema baixa as movimentações na hora, mantendo tudo atualizado.</p>
+            </div>
+            
+            <div class="bento-item bento-Item-3 stagger-item">
+                <i class="ph-fill ph-users"></i>
+                <h3>Gestão de clientes</h3>
+                <p>Acompanhe o histórico e as preferências do seu público.</p>
+            </div>
+            
+            <div class="bento-item bento-Item-4 stagger-item">
+                <i class="ph-fill ph-currency-circle-dollar"></i>
+                <h3>Contas a pagar e receber</h3>
+                <p>Controle financeiro total para não perder nenhum prazo.</p>
+            </div>
+            
+            <div class="bento-item bento-Item-5 stagger-item">
+                <i class="ph-fill ph-chart-pie-slice"></i>
+                <h3>Relatórios de vendas e lucro</h3>
+                <p>Análises claras para você tomar decisões certeiras no seu negócio.</p>
+            </div>
+            
+            <div class="bento-item bento-Item-6 stagger-item">
+                <i class="ph-fill ph-identification-badge"></i>
+                <h3>Funcionários e comissões</h3>
+                <p>Automação completa no cálculo de repasses e metas de vendas por equipe.</p>
+            </div>
+            
+            <div class="bento-item bento-Item-7 stagger-item">
+                <i class="ph-fill ph-bell-ringing"></i>
+                <h3>Alertas de estoque baixo</h3>
+                <p>Receba avisos instantâneos quando os produtos mais vendidos precisarem de reposição.</p>
+            </div>
+
+            <div class="bento-item bento-Item-8 stagger-item">
+                <div class="bento-content">
+                    <span class="badge" style="background: rgba(255,255,255,0.2); border: none; color: #fff; margin-bottom: 1rem;">Exclusivo</span>
+                    <h3>Registro Inteligente com IA</h3>
+                    <p>Escreva ou mande um áudio como fala no dia a dia. A inteligência artificial do Bilent entende o contexto e registra a venda, dá baixa no estoque e calcula o lucro automaticamente.</p>
+                </div>
+                <div class="bento-visual">
+                    <i class="ph-fill ph-magic-wand"></i>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- Público -->
+    <section id="para-quem-e" class="section bg-light section-patterns" style="overflow-x: hidden;">
+        <div class="container section-header text-center">
+            <span class="badge">Para quem é</span>
+            <h2>Feito para donos de negócios inovadores</h2>
+            <p>O Bilent é ideal para quem não tem tempo a perder com sistemas complicados. Se você precisa organizar rápido crescendo sua empresa, é para você.</p>
+        </div>
+        
+        <div class="quem-marquee-container">
+            <div class="quem-marquee-track">
+                <!-- Row 1 -->
+                <div class="marquee-row row-left">
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-t-shirt"></i></div> Lojas de Roupas</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-bowl-food"></i></div> Açaíterias e Sorveterias</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-cake"></i></div> Confeitarias e Padarias</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-scissors"></i></div> Salões e Barbearias</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-storefront"></i></div> Comércios e Lojistas</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-wrench"></i></div> Oficinas e Serviços</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-device-mobile"></i></div> Assistências Técnicas</span>
+                    <!-- Duplicate for infinite scroll -->
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-t-shirt"></i></div> Lojas de Roupas</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-bowl-food"></i></div> Açaíterias e Sorveterias</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-cake"></i></div> Confeitarias e Padarias</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-scissors"></i></div> Salões e Barbearias</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-storefront"></i></div> Comércios e Lojistas</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-wrench"></i></div> Oficinas e Serviços</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-device-mobile"></i></div> Assistências Técnicas</span>
+                </div>
+                
+                <!-- Row 2 -->
+                <div class="marquee-row row-right">
+                    <!-- Second row: we add many more -->
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-hamburger"></i></div> Restaurantes e Bares</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-paw-print"></i></div> Petshops & Clínicas</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-first-aid"></i></div> Saúde e Estética</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-coffee"></i></div> Cafeterias</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-barbell"></i></div> Academias & Studio</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-paint-roller"></i></div> Casa e Construção</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-car"></i></div> Estética Automotiva</span>
+                    <!-- Duplicate for infinite scroll -->
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-hamburger"></i></div> Restaurantes e Bares</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-paw-print"></i></div> Petshops & Clínicas</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-first-aid"></i></div> Saúde e Estética</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-coffee"></i></div> Cafeterias</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-barbell"></i></div> Academias & Studio</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-paint-roller"></i></div> Casa e Construção</span>
+                    <span class="modern-niche-tag"><div class="niche-icon"><i class="ph-fill ph-car"></i></div> Estética Automotiva</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Showcase de Funcionalidades -->
+    <section id="showcase" class="section bg-white section-patterns">
+        <div class="container section-header text-center">
+            <span class="badge">Funcionalidades na Prática</span>
+            <h2>Feito para simplificar o seu dia a dia</h2>
+            <p>Veja como o Bilent transforma a complexidade da sua empresa em dados claros e ações simples.</p>
+        </div>
+        
+        <div class="container showcase-grid stagger-container">
+            <!-- Item 1: Estoque -->
+            <div class="showcase-item stagger-item">
+                <div class="showcase-info">
+                    <div class="icon-box primary"><i class="ph-fill ph-package"></i></div>
+                    <h3>Controle de Estoque Inteligente</h3>
+                    <p>Gerencie produtos, custos e margem de lucro em uma visão limpa. Saiba exatamente o que precisa ser reposto.</p>
+                </div>
+                <div class="showcase-visual h-tilt">
+                    <img src="assets/showcase_inventory.png" alt="Gestão de Estoque Bilent">
+                </div>
+            </div>
+
+            <!-- Item 2: Relatórios/Gráficos -->
+            <div class="showcase-item stagger-item reverse">
+                <div class="showcase-info">
+                    <div class="icon-box accent"><i class="ph-fill ph-chart-pie-slice"></i></div>
+                    <h3>Análises Financeiras Reais</h3>
+                    <p>Gráficos intuitivos de fluxo de caixa e lucro líquido. Entenda a saúde financeira da sua empresa sem planilhas complexas.</p>
+                </div>
+                <div class="showcase-visual v-tilt">
+                    <img src="assets/showcase_report.png" alt="Relatórios Financeiros Bilent">
+                </div>
+            </div>
+
+            <!-- Item 3: CRM/Vendas -->
+            <div class="showcase-item stagger-item">
+                <div class="showcase-info">
+                    <div class="icon-box primary"><i class="ph-fill ph-chart-line-up"></i></div>
+                    <h3>Vendas & CRM de Alta Conversão</h3>
+                    <p>Acompanhe seu faturamento, ticket médio e a conversão de vendas em tempo real para tomar decisões melhores.</p>
+                </div>
+                <div class="showcase-visual h-tilt">
+                    <img src="assets/showcase_sales.png" alt="CRM e Vendas Bilent">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculadora Dinheiro Perdido (NEW FEATURE) -->
+    <section id="calculadora" class="section bg-light section-patterns">
+        <div class="container section-header text-center">
+            <span class="badge" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: rgba(239, 68, 68, 0.2);">Atenção</span>
+            <h2>Quanto dinheiro você pode estar perdendo?</h2>
+            <p>Sem controle de estoque e registros exatos, pequenos furtos e perdas invisíveis comem de 10 a 15% do faturamento.</p>
+        </div>
+        
+        <div class="container calc-glass-wrapper stagger-container">
+            <div class="calc-glass-box stagger-item">
+                <div class="calc-controls">
+                    <div class="range-group">
+                        <div class="range-header">
+                            <label>Vendas médias por dia</label>
+                            <span id="vendas-val">15</span>
+                        </div>
+                        <input type="range" id="calc-vendas" min="1" max="100" value="15" class="modern-slider">
+                    </div>
+                    
+                    <div class="range-group">
+                        <div class="range-header">
+                            <label>Ticket médio por venda</label>
+                            <span id="ticket-val">R$ 85</span>
+                        </div>
+                        <input type="range" id="calc-ticket" min="10" max="500" value="85" step="5" class="modern-slider">
+                    </div>
+                </div>
+                
+                <div class="calc-result-box">
+                    <h5>Você pode estar perdendo até</h5>
+                    <div class="calc-money" id="calc-resultado"><span>R$</span> 5.737</div>
+                    <p>Estimativa de perda mensal (15%) por desorganização.</p>
+                    <a href="#precos" class="btn btn-primary w-100">Estancar perda com Bilent</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparativo Caderno vs Bilent (NEW FEATURE) -->
+    <section id="comparativo" class="section bg-white section-patterns">
+        <div class="container section-header text-center">
+            <span class="badge">Comparativo</span>
+            <h2>Caderno vs Bilent</h2>
+            <p>A diferença brutal que a digitalização traz para o seu negócio diariamente.</p>
+        </div>
+        
+        <div class="container comparison-modern fade-in-up">
+            <div class="comp-table-glass">
+                <div class="comp-header">
+                    <div class="comp-col feature-col">Funcionalidade</div>
+                    <div class="comp-col old-way"><i class="ph-bold ph-notebook"></i> Caderno</div>
+                    <div class="comp-col mid-way"><i class="ph-bold ph-table"></i> Planilha</div>
+                    <div class="comp-col bilent-way"><i class="ph-fill ph-storefront"></i> Bilent</div>
+                </div>
+                
+                <div class="comp-row">
+                    <div class="comp-col feature-col">Controle de Estoque</div>
+                    <div class="comp-col old-way"><i class="ph-bold ph-x"></i> Não existe</div>
+                    <div class="comp-col mid-way"><i class="ph-bold ph-warning"></i> Manual / Lento</div>
+                    <div class="comp-col bilent-way"><i class="ph-bold ph-check"></i> Automático</div>
+                </div>
+                
+                <div class="comp-row">
+                    <div class="comp-col feature-col">Lucro Automático</div>
+                    <div class="comp-col old-way"><i class="ph-bold ph-x"></i> Contas loucas</div>
+                    <div class="comp-col mid-way"><i class="ph-bold ph-warning"></i> Fórmulas chatas</div>
+                    <div class="comp-col bilent-way"><i class="ph-bold ph-check"></i> Imediato</div>
+                </div>
+                
+                <div class="comp-row">
+                    <div class="comp-col feature-col">Relatórios</div>
+                    <div class="comp-col old-way"><i class="ph-bold ph-x"></i> Zero</div>
+                    <div class="comp-col mid-way"><i class="ph-bold ph-check"></i> Básicos</div>
+                    <div class="comp-col bilent-way"><i class="ph-bold ph-check"></i> Dashboards reais</div>
+                </div>
+                
+                <div class="comp-row">
+                    <div class="comp-col feature-col">Registro com IA</div>
+                    <div class="comp-col old-way"><i class="ph-bold ph-x"></i> Só papel</div>
+                    <div class="comp-col mid-way"><i class="ph-bold ph-x"></i> Só digitando</div>
+                    <div class="comp-col bilent-way"><i class="ph-bold ph-check"></i> Fale e registre</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Preços -->
+    <section id="precos" class="section bg-light">
+        <div class="text-outline" style="bottom: 10%; left: 5%;">PREÇOS</div>
+        <div class="container section-header text-center">
+            <span class="badge">Preços</span>
+            <h2>Simples e sem surpresas</h2>
+            <p>Um único plano com tudo que você precisa liberado. Escolha como prefere pagar.</p>
+        </div>
+        <div class="pricing-wrapper">
+            <!-- Tabs selection -->
+            <div class="pricing-tabs">
+                <button class="tab-btn active" data-plan="mensal">Mensal</button>
+                <button class="tab-btn" data-plan="anual">Anual <span class="tab-badge">Economize R$ 240</span></button>
+                <button class="tab-btn" data-plan="exclusivo">Exclusivo</button>
+            </div>
+
+            <!-- Main display card -->
+            <div class="pricing-display">
+                <div class="plan-card-large">
+                    <div class="plan-main-info">
+                        <div class="plan-header">
+                            <h3 id="plan-title">Plano Completo</h3>
+                            <p id="plan-subtitle">Todos os recursos inclusos. Sem limites.</p>
+                        </div>
+                        <div class="plan-price-box">
+                            <div class="plan-price" id="plan-price-display">
+                                <span class="currency">R$</span>
+                                <span class="value" id="price-val">69,90</span>
+                                <span class="period" id="price-per">/mês</span>
+                            </div>
+                            <p class="plan-payment-info" id="payment-info">Pagamento mensal</p>
+                            <div class="economy-tag" id="economy-tag" style="display: none;">
+                                <i class="ph-fill ph-trend-up"></i> Economize R$ 240 comparado ao mensal
+                            </div>
+                        </div>
+                        <a href="https://www.asaas.com/paymentCampaign/show/3623754" target="_blank" id="plan-cta-btn" class="btn btn-primary btn-large w-100">Começar Agora</a>
+                        <p class="plan-guarantee">Garantia de 7 dias • Cancele quando quiser</p>
+                    </div>
+
+                    <div class="plan-features-column">
+                        <h4>Tudo incluso:</h4>
+                        <ul class="features-grid">
+                            <li><i class="ph-fill ph-check-circle"></i> Registro Inteligente por Texto/Voz (IA)</li>
+                            <li><i class="ph-fill ph-check-circle"></i> Gestão de Vendas & CRM</li>
+                            <li><i class="ph-fill ph-check-circle"></i> Fluxo de Caixa & Plano de Contas</li>
+                            <li><i class="ph-fill ph-check-circle"></i> Controle de Estoque com Margem Real</li>
+                            <li><i class="ph-fill ph-check-circle"></i> Dashboards de Faturamento e Lucro</li>
+                            <li><i class="ph-fill ph-check-circle"></i> Ticket Médio e Histórico de Clientes</li>
+                            <li><i class="ph-fill ph-check-circle"></i> Suporte Premium & Treinamento</li>
+                            <li><i class="ph-fill ph-check-circle"></i> Acesso Multi-empresa</li>
+                            <li><i class="ph-fill ph-check-circle"></i> Mais produtividade com IA</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prova Social -->
+    <section id="prova-social" class="section bg-white">
+        <div class="container section-header text-center">
+            <span class="badge">Depoimentos</span>
+            <h2>Empresários já estão organizando seus negócios com Bilent.</h2>
+            <p>Veja o que quem usa o sistema tem a dizer sobre nossa solução.</p>
+        </div>
+        <div class="container testimonials-container stagger-container">
+            <!-- Testimonial 1: The Notebook -->
+            <div class="testimonial-card stagger-item">
+                <div class="stars">
+                    <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+                </div>
+                <p class="quote">"O Bilent substituiu meu caderno. O que eu levava horas pra organizar, agora resolvo em minutos. Minha gestão ficou profissional e prática."</p>
+                <div class="author">
+                    <div class="author-avatar" style="background-color: #4285f4;">M</div>
+                    <div class="author-info">
+                        <h4>Mariana S. <span class="verified-badge"><i class="ph-fill ph-check-circle"></i> Verificado</span></h4>
+                        <span>Dona de Boutique</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Testimonial 2: Stock Mystery -->
+            <div class="testimonial-card stagger-item">
+                <div class="stars">
+                    <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+                </div>
+                <p class="quote">"Parei de perder dinheiro com estoque parado ou faltando. O alerta automático de reposição mudou o jogo aqui na loja. Recomendo!"</p>
+                <div class="author">
+                    <div class="author-avatar" style="background-color: #34a853;">R</div>
+                    <div class="author-info">
+                        <h4>Ricardo M. <span class="verified-badge"><i class="ph-fill ph-check-circle"></i> Verificado</span></h4>
+                        <span>Mercado de Bairro</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial 3: Registration Friction -->
+            <div class="testimonial-card stagger-item">
+                <div class="stars">
+                    <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+                </div>
+                <p class="quote">"A venda por IA é impressionante. Só escrevo o pedido e o sistema já lança tudo. Ganhei agilidade e não deixo mais os clientes esperando."</p>
+                <div class="author">
+                    <div class="author-avatar" style="background-color: #fbbc04;">J</div>
+                    <div class="author-info">
+                        <h4>João Pedro <span class="verified-badge"><i class="ph-fill ph-check-circle"></i> Verificado</span></h4>
+                        <span>Açaíteria & Lanches</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Final Premium -->
+    <section class="cta-premium">
+        <div class="container">
+            <div class="cta-premium-card reveal-up">
+                <div class="cta-content">
+                    
+                    <div class="cta-avatars" style="display: none;">
+                    </div>
+
+                    <h2>Pronto para dominar o seu <span class="text-gradient">negócio?</span></h2>
+                    <p>Pare de perder dinheiro com planilhas confusas e cadernos desorganizados. Experimente o Bilent gratuitamente por 30 dias e sinta o poder da gestão inteligente.</p>
+                    
+                    <div class="cta-actions">
+                        <a href="#precos" class="btn-glow">
+                            Começar meu teste grátis <i class="ph-bold ph-arrow-right"></i>
+                        </a>
+                        <div class="cta-subtext">
+                            <i class="ph-fill ph-check-circle"></i> Sem cartão de crédito • Configuração em 2 minutos
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-info">
+                <div class="logo">
+                    <i class="ph-fill ph-storefront"></i>
+                    <span>Bilent</span>
+                </div>
+                <p>Sistema de gestão focado na simplicidade para pequenos negócios.</p>
+            </div>
+            
+            <div class="footer-links">
+                <div class="link-group">
+                    <h4>Contato</h4>
+                    <a href="mailto:suporte@bilentapp.com">suporte@bilentapp.com</a>
+                    <a href="#">(11) 99999-9999</a>
+                </div>
+                <div class="link-group">
+                    <h4>Legal</h4>
+                    <a href="#">Termos de uso</a>
+                    <a href="#">Privacidade</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 Bilent. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/bilent.js"></script>
+</body>
+</html>
