@@ -242,16 +242,16 @@ body.dark-mode .navbar.scrolled {
 }
 
 .logo img {
-    height: 130px;
+    height: 100px; /* Reduced from 130px to prevent breaking */
     width: auto;
     object-fit: contain;
-    margin: -40px 0;
+    margin: -20px 0;
 }
 
 @media (max-width: 992px) {
     .logo img {
-        height: 90px;
-        margin: -25px 0;
+        height: 50px;
+        margin: -10px 0;
     }
 }
 
@@ -353,10 +353,10 @@ body.dark-mode .float-logo {
 }
 
 .float-logo img {
-    height: 80px;
+    height: 40px;
     width: auto;
     object-fit: contain;
-    margin: -25px 0;
+    margin: -5px 0;
 }
 
 .float-actions {
@@ -595,6 +595,7 @@ body.dark-mode .btn-outline:hover {
 
     .navbar {
         padding: 0.75rem 0 !important; /* Mais compacto no topo do mobile */
+        position: absolute; /* Esconde este menu central quando der scroll */
     }
 
     .hero-content h1 {
