@@ -199,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
             period: '/mês',
             payment: 'Pagamento mensal',
             economy: false,
-            link: 'https://www.asaas.com/paymentCampaign/show/3623754',
+            link: 'https://www.asaas.com/c/ryl7x51fncqkcsyn',
             btnText: 'Começar Agora'
         },
         anual: {
@@ -208,7 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
             period: '/mês',
             payment: 'Cobrado anualmente (R$ 598,80)',
             economy: true,
-            link: 'https://www.asaas.com/paymentCampaign/show/3623765', 
+            link: 'https://www.asaas.com/c/6wx9wq0ibney40ix', 
             btnText: 'Começar Agora'
         },
         exclusivo: {

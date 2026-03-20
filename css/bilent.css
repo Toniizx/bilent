@@ -241,6 +241,20 @@ body.dark-mode .navbar.scrolled {
     font-size: 1.8rem;
 }
 
+.logo img {
+    height: 130px;
+    width: auto;
+    object-fit: contain;
+    margin: -40px 0;
+}
+
+@media (max-width: 992px) {
+    .logo img {
+        height: 90px;
+        margin: -25px 0;
+    }
+}
+
 .nav-links {
     display: flex;
     gap: 2.5rem;
@@ -336,6 +350,13 @@ body.dark-mode .float-logo {
 .float-logo i {
     font-size: 1.25rem;
     color: var(--clr-primary-500);
+}
+
+.float-logo img {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+    margin: -25px 0;
 }
 
 .float-actions {
