@@ -217,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
             period: 'Consulta',
             payment: 'Desenvolvimento sob medida',
             economy: false,
-            link: 'https://wa.me/5511999999999',
+            link: 'https://wa.me/553172359811',
             btnText: 'Falar com Consultor'
         }
     };
