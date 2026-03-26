@@ -2,3 +2,7 @@ node_modules/
 .gemini/
 .env
 .vscode/
+EdgeTempProfile/
+*.log
+dump.html
+error_log.txt
