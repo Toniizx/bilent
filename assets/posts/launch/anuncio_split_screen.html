@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Anúncio Bilent - Split Screen | Alta Conversão</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+    
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #111;
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .ad-container {
+      /* Formato Feed 1:1 Instagram */
+      width: 1080px;
+      height: 1080px;
+      position: relative;
+      background: white;
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+      box-shadow: 0 0 50px rgba(0,0,0,0.8);
+      
+      /* Escalonamento automático para caber na maioria das telas para o Print/Captura */
+      transform: scale(0.65); 
+      transform-origin: center center;
+    }
+    
+    /* LADO ESQUERDO: O CAOS (2006) */
+    .left-side {
+      flex: 1;
+      background-color: #e2e8f0;
+      position: relative;
+      padding: 60px 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      
+      /* Fundo de planilhas cinza/caos */
+      background-image: 
+        linear-gradient(rgba(148, 163, 184, 0.4) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(148, 163, 184, 0.4) 2px, transparent 2px);
+      background-size: 60px 40px;
+      border-right: 4px solid #fff;
+    }
+    
+    /* Decorações do Caos (Visuals de Planilhas e Cadernos) */
+    .left-side::before {
+      content: 'Planilha1.xlsx (Não Salva)';
+      position: absolute;
+      width: 380px;
+      height: 250px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-top: 30px solid #22c55e;
+      box-shadow: 4px 10px 30px rgba(0,0,0,0.1);
+      transform: rotate(-10deg);
+      top: 32%;
+      left: -30px;
+      opacity: 0.95;
+      border-radius: 8px;
+      padding: 15px;
+      font-size: 16px;
+      color: #64748b;
+      font-weight: 700;
+      filter: blur(2px);
+    }
+    
+    .left-side::after {
+      content: 'Controle Financeiro 2006...';
+      position: absolute;
+      width: 350px;
+      height: 280px;
+      background: #fefce8;
+      border: 1px solid #e2e8f0;
+      border-top: 25px solid #fcd34d;
+      box-shadow: 2px 4px 20px rgba(0,0,0,0.1);
+      transform: rotate(15deg);
+      top: 60%;
+      right: -20px;
+      opacity: 0.95;
+      border-radius: 8px;
+      padding: 15px;
+      font-size: 16px;
+      color: #64748b;
+      font-weight: 700;
+      filter: blur(1px);
+    }
+    
+    /* Texto "Você ainda está..." */
+    .speech-bubble {
+      background: #ffffff;
+      border-radius: 30px;
+      padding: 40px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+      z-index: 10;
+      text-align: center;
+      margin-top: 20px;
+      border: 3px solid #cbd5e1;
+      position: relative;
+    }
+    
+    .speech-bubble h2 {
+      margin: 0;
+      color: #1e293b;
+      font-size: 46px;
+      line-height: 1.3;
+      font-weight: 800;
+    }
+    
+    .speech-bubble .highlight {
+      color: #0f172a;
+      background-color: #fca5a5;
+      padding: 5px 15px;
+      border-radius: 8px;
+      font-style: italic;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+
+    /* LADO DIREITO: O FUTURO SAAS OTIMIZADO (2026) */
+    .right-side {
+      flex: 1;
+      background: linear-gradient(145deg, #7c3aed, #06b6d4);
+      position: relative;
+      padding: 60px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: inset 0 0 150px rgba(0,0,0,0.3);
+    }
+    
+    .right-year {
+      color: #ffffff;
+      font-size: 72px;
+      font-weight: 900;
+      margin-top: -10px;
+      margin-bottom: 30px;
+      text-shadow: 0 5px 20px rgba(0,0,0,0.4);
+      letter-spacing: -2px;
+    }
+    
+    .right-image-container {
+      width: 100%;
+      margin: 10px 0 40px 0;
+      display: flex;
+      justify-content: center;
+      position: relative;
+      z-index: 5;
+    }
+    
+    .right-image-container img {
+      width: 125%;
+      max-width: 650px;
+      margin-left: -60px; /* Sobrepõe levemente à esquerda gerando contraste */
+      border-radius: 35px;
+      box-shadow: -20px 30px 60px rgba(0,0,0,0.6);
+      border: 8px solid rgba(255,255,255,0.15);
+    }
+    
+    .right-text {
+      color: #ffffff;
+      font-size: 42px;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.35;
+      text-shadow: 0 5px 20px rgba(0,0,0,0.4);
+      position: relative;
+      z-index: 5;
+      margin-top: auto;
+      margin-bottom: 160px; /* Alinhamento estrito */
+    }
+
+    /* OVERLAYS ESPECIAIS (BOTÕES / MARCA) */
+    
+    .cta-container {
+      position: absolute;
+      bottom: 150px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      background: #ffffff;
+      border-radius: 60px;
+      padding: 15px; 
+      box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+    }
+    
+    .cta-button {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 24px 75px;
+      border-radius: 45px;
+      font-size: 40px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    
+    .logo-container {
+      position: absolute;
+      bottom: 35px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      background: #0f172a; 
+      padding: 15px 45px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    
+    .logo-text {
+      font-size: 50px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 4px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Essa é a div que você vai Capturar/Printar (Quadrado Perfeito 1080x1080) -->
+  <div class="ad-container" id="capture-area">
+    
+    <!-- LADO ESQUERDO: Caos e Dor -->
+    <div class="left-side">
+      <div class="speech-bubble">
+        <h2>Você ainda está tentando gerenciar sua empresa como em <br><span class="highlight">2006</span>?</h2>
+      </div>
+    </div>
+    
+    <!-- LADO DIREITO: Solução e Futuro -->
+    <div class="right-side">
+      <div class="right-year">2026</div>
+      
+      <div class="right-image-container">
+        <!-- Renderizando direto do diretório atual da pasta (Onde as imagens finais moram) -->
+        <img src="bilent_POST_OFICIAL_DEFINITIVO_V9.png" alt="O Sistema Inteligente Bilent">
+      </div>
+      
+      <div class="right-text">
+        Pequenos negócios que querem crescer precisam de controle financeiro de verdade.
+      </div>
+    </div>
+    
+    <!-- CTA Centralizado -->
+    <div class="cta-container">
+      <div class="cta-button">COMECE GRÁTIS</div>
+    </div>
+    
+    <!-- LABEL DA MARCA -->
+    <div class="logo-container">
+      <div class="logo-text">BILENT</div>
+    </div>
+
+  </div>
+
+</body>
+</html>

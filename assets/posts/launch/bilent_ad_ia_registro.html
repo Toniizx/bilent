@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Bilent - Ad Static (Resumo Inteligente)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f1f5f9;
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .ad-container {
+      /* Formato Feed Instagram/Facebook 1:1 */
+      width: 1080px;
+      height: 1080px;
+      position: relative;
+      background: white;
+      overflow: hidden;
+      box-shadow: 0 0 40px rgba(0,0,0,0.1);
+      
+      /* Escalonamento automático para visualização na tela */
+      transform: scale(0.65); 
+      transform-origin: center center;
+    }
+
+    /* Topo do Post (Textos) */
+    .header {
+      padding: 80px 80px 0 80px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    h1 {
+      color: #0f172a;
+      font-size: 64px;
+      font-weight: 900;
+      line-height: 1.15;
+      margin: 0;
+      letter-spacing: -1.5px;
+    }
+
+    h1 span {
+      color: #7c3aed; /* Roxo Bilent */
+    }
+
+    .subtitle {
+      color: #64748b;
+      font-size: 34px;
+      margin-top: 25px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    /* Área central de Imagem e Destaques */
+    .mockup-area {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 600px;
+      background: linear-gradient(0deg, #f8fafc 0%, #ffffff 100%);
+      display: flex;
+      justify-content: center;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .dashboard-img {
+      width: 80%;
+      max-width: 900px;
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 -20px 50px rgba(0,0,0,0.15);
+      position: absolute;
+      bottom: 0;
+      border: 4px solid #fff;
+      border-bottom: none;
+    }
+
+    /* Notificação / Chat da IA (Estático) */
+    .ia-chat-bubble {
+      position: absolute;
+      top: 400px; /* Sobreposto acima da imagem do painel */
+      right: 60px;
+      background: #ffffff;
+      padding: 25px 30px;
+      border-radius: 25px;
+      border-bottom-right-radius: 5px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05);
+      z-index: 20;
+      width: 480px;
+      border-left: 6px solid #7c3aed;
+    }
+
+    .user-msg {
+      background: #f1f5f9;
+      padding: 15px 20px;
+      border-radius: 12px;
+      font-size: 20px;
+      color: #334155;
+      margin-bottom: 15px;
+      font-style: italic;
+    }
+
+    .ia-reply {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    .ia-icon {
+      width: 40px;
+      height: 40px;
+      background: #7c3aed;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .ia-text {
+      color: #0f172a;
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    
+    .ia-text span {
+      display: block;
+      color: #10b981;
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 5px;
+    }
+
+    /* Decorativos */
+    .logo-stamp {
+      position: absolute;
+      top: 40px;
+      left: 40px;
+      font-size: 32px;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Tela Estática de 1080x1080 exatos para você salvar como Imagem / Capturar -->
+  <div class="ad-container" id="capture-area">
+    
+    <div class="logo-stamp">BILENT</div>
+
+    <div class="header">
+      <h1>A forma mais fácil de<br>registrar <span>vendas e despesas.</span></h1>
+      <div class="subtitle">Esqueça as planilhas chatas. Escreva ou fale, e a <br>Nossa IA faz o lançamento no caixa para você.</div>
+    </div>
+
+    <div class="mockup-area">
+      <!-- Imagem do painel -->
+      <img src="bilent_POST_OFICIAL_DEFINITIVO_V9.png" alt="Dashboard Bilent" class="dashboard-img">
+    </div>
+
+    <!-- Representação visual do funcionamento real da IA -->
+    <div class="ia-chat-bubble">
+      <div class="user-msg">
+        "Vendi um perfume hoje por R$ 150 no Pix."
+      </div>
+      <div class="ia-reply">
+        <div class="ia-icon">🤖</div>
+        <div class="ia-text">
+          Lançamento registrado!
+          <span>+ R$ 150,00 (Pix) no caixa.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

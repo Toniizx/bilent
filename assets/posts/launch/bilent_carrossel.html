@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bilent - Carrossel Instagram</title>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-light: #a78bfa;
+            --bg-dark: #09090b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text-main: #f9fafb;
+            --text-muted: #a1a1aa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #111;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* 1080x1080 is the universal square standard perfect for Instagram Carousel Feed */
+        .carousel-slide {
+            width: 1080px;
+            height: 1080px;
+            background: radial-gradient(circle at 50% 10%, #1f1240 0%, var(--bg-dark) 70%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #222;
+        }
+
+        /* Abstract Glows */
+        .glow {
+            position: absolute;
+            background: var(--primary);
+            filter: blur(160px);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .glow.top-left { width: 600px; height: 600px; top: -250px; left: -100px; opacity: 0.45; }
+        .glow.bottom-right { width: 500px; height: 500px; bottom: -150px; right: -50px; opacity: 0.35; background: #6d28d9; }
+        .glow.center-intense { width: 400px; height: 400px; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.25; background: var(--success); }
+
+        /* Shared Header/Logo (Top center) */
+        .slide-header {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 20;
+        }
+        .brand-logo img {
+            height: 110px;
+            object-fit: contain;
+        }
+
+        /* Swipe Indicator (Bottom right) */
+        .swipe-hint {
+            position: absolute;
+            bottom: 50px;
+            right: 50px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-muted);
+            z-index: 30;
+            animation: bounce-right 2s infinite;
+        }
+        @keyframes bounce-right {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(10px); }
+        }
+
+        /* -------------------------------------
+           SLIDE 1: Hook
+        ------------------------------------- */
+        #slide1 { 
+            display: flex;
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+            flex-direction: column;
+        }
+        .hook-icon {
+            font-size: 110px;
+            color: #ef4444;
+            margin-bottom: 40px;
+            z-index: 10;
+            filter: drop-shadow(0 0 40px rgba(239, 68, 68, 0.4));
+        }
+        #slide1 .headline {
+            z-index: 10;
+            font-size: 76px;
+            font-weight: 900;
+            line-height: 1.15;
+            letter-spacing: -2px;
+            color: var(--text-main);
+            max-width: 850px;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        #slide1 .headline span { color: #f87171; text-shadow: 0 0 30px rgba(239, 68, 68, 0.4); }
+
+        /* -------------------------------------
+           SLIDE 2: Problema/Solução
+        ------------------------------------- */
+        #slide2 { 
+            display: flex;
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+            flex-direction: column;
+        }
+        
+        #slide2 .headline {
+            z-index: 10;
+            font-size: 58px;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            color: var(--text-muted);
+            max-width: 900px;
+            margin-bottom: 24px;
+        }
+        #slide2 .headline span { color: #c4b5fd; text-shadow: 0 0 30px rgba(124, 58, 237, 0.4); }
+
+        .slide2-subtxt {
+            z-index: 10;
+            font-size: 26px;
+            font-weight: 500;
+            color: var(--text-main);
+            line-height: 1.4;
+            max-width: 800px;
+            margin-bottom: 50px;
+        }
+
+        .widget-track {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+
+        /* Reusing Widget CSS */
+        .widget {
+            position: absolute;
+            background: rgba(15, 12, 25, 0.95);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(124, 58, 237, 0.5);
+            border-radius: 20px;
+            padding: 30px 40px;
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        
+        .widget-icon {
+            font-size: 40px;
+            width: 68px;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: white;
+        }
+        .widget-text {
+            color: #fff;
+            font-size: 24px;
+            font-weight: 500;
+            line-height: 1.4;
+            text-align: left;
+        }
+        .widget-text b { font-weight: 700; color: #fff; }
+
+        .widget-audio {
+            left: 100px;
+            top: 20px;
+            transform: rotate(-3deg);
+            background: rgba(15, 12, 25, 0.98);
+        }
+        .widget-audio .widget-icon {
+            background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%);
+            box-shadow: 0 5px 25px rgba(124,58,237,0.5);
+        }
+        
+        .widget-success {
+            right: 80px;
+            bottom: -20px;
+            background: rgba(10, 20, 15, 0.98);
+            border: 1px solid var(--success);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.7), 0 0 40px rgba(16, 185, 129, 0.2);
+            transform: rotate(2deg);
+        }
+        .widget-success .widget-icon {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            box-shadow: 0 5px 25px rgba(16,185,129,0.5);
+        }
+
+        .transition-arrow {
+            font-size: 60px;
+            color: var(--primary-light);
+            z-index: 10;
+        }
+
+        /* -------------------------------------
+           SLIDE 3: CTA & Dashboard
+        ------------------------------------- */
+        #slide3 { padding-top: 220px; align-items: center; }
+        
+        #slide3 .headline {
+            z-index: 10;
+            font-size: 58px;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1.5px;
+            color: var(--text-main);
+            text-align: center;
+            margin-bottom: 40px;
+            margin-top: -20px;
+        }
+
+        /* Real Premium CSS Dashboard Mockup */
+        .dashboard-mockup {
+            z-index: 10;
+            width: 860px;
+            height: 480px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            margin-bottom: 50px;
+        }
+        .mac-bar { height: 40px; background: #f8fafc; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid #e2e8f0; }
+        .mac-dots { display: flex; gap: 8px; }
+        .mac-dot { width: 11px; height: 11px; border-radius: 50%; }
+        .mac-dot.r { background: #ff5f56; }
+        .mac-dot.y { background: #ffbd2e; }
+        .mac-dot.g { background: #27c93f; }
+        .dash-search { margin: 0 auto; width: 250px; height: 20px; background: #e2e8f0; border-radius: 10px; opacity: 0.6; }
+        .dash-layout { display: flex; flex: 1; background: #f8fafc; }
+        .dash-sidebar { width: 220px; background: #ffffff; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; }
+        
+        .sidebar-brand { padding: 20px 16px; display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 800; color: #0f172a; }
+        .sidebar-brand img { width: 30px; object-fit: contain; border-radius: 4px; }
+
+        .nav-items { display: flex; flex-direction: column; gap: 4px; padding: 0 12px; }
+        .nav-item { height: 36px; border-radius: 8px; display: flex; align-items: center; gap: 10px; padding: 0 14px; font-size: 13px; font-weight: 500; color: #64748b; }
+        .nav-item i { font-size: 16px; color: #94a3b8; }
+        .nav-item.active { background: #f3e8ff; color: var(--primary); font-weight: 600; }
+        .nav-item.active i { color: var(--primary); }
+        .dash-main { flex: 1; padding: 24px 30px; background: #f8fafc; }
+        .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .dash-title { font-size: 22px; font-weight: 800; color: #0f172a; }
+        .date-picker { background: white; padding: 6px 14px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 12px; font-weight: 600; color: #475569; display: flex; align-items: center; gap: 6px; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+        .metric-card { background: white; padding: 18px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .metric-label { font-size: 13px; color: #64748b; margin-bottom: 10px; font-weight: 600; }
+        .metric-value { font-size: 24px; font-weight: 800; color: #0f172a; letter-spacing: -1px; }
+        .metric-trend { margin-top: 6px; font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+        .trend-up { color: var(--success); }
+        .trend-down { color: var(--danger); }
+        .chart-box { background: white; border-radius: 12px; border: 1px solid #e2e8f0; height: 140px; padding: 16px 16px 0 16px; display: flex; align-items: flex-end; gap: 12px; background-image: linear-gradient(#f1f5f9 1px, transparent 1px); background-size: 100% 32px; }
+        .chart-bar { flex: 1; background: linear-gradient(to top, var(--primary) 0%, var(--primary-light) 100%); border-radius: 4px 4px 0 0; }
+        .chart-bar:nth-child(1) { height: 35%; } .chart-bar:nth-child(2) { height: 50%; } .chart-bar:nth-child(3) { height: 40%; } .chart-bar:nth-child(4) { height: 85%; background: linear-gradient(to top, #6d28d9 0%, var(--primary) 100%); } .chart-bar:nth-child(5) { height: 65%; } .chart-bar:nth-child(6) { height: 95%; background: linear-gradient(to top, #6d28d9 0%, var(--primary) 100%); } .chart-bar:nth-child(7) { height: 80%; }
+
+        .footer-action {
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .btn-cta {
+            background: linear-gradient(135deg, var(--primary) 0%, #6d28d9 100%);
+            color: white;
+            padding: 24px 80px;
+            border-radius: 100px;
+            font-size: 32px;
+            font-weight: 800;
+            text-transform: uppercase;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 15px 35px rgba(124, 58, 237, 0.5), inset 0 2px 0 rgba(255,255,255,0.2);
+            letter-spacing: 1px;
+            text-decoration: none;
+        }
+        .guarantee {
+            color: white;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- SLIDE 1: HOOK/Captura -->
+    <div id="slide1" class="carousel-slide">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+        
+        <div class="slide-header">
+            <div class="brand-logo">
+                <img src="../../logo.png" alt="Bilent">
+            </div>
+        </div>
+
+        <i class="ph-fill ph-warning-circle hook-icon"></i>
+        <h1 class="headline">A maior <span>mentira</span> que te contam sobre gerenciar vendas...</h1>
+
+        <div class="swipe-hint">
+            Arraste para o lado <i class="ph-bold ph-arrow-right"></i>
+        </div>
+    </div>
+
+
+    <!-- SLIDE 2: THE PROBLEM/SOLUTION -->
+    <div id="slide2" class="carousel-slide">
+        <div class="glow glow-1" style="background: #10b981;"></div>
+        <div class="glow glow-2"></div>
+
+        <div class="slide-header">
+            <div class="brand-logo">
+                <img src="../../logo.png" alt="Bilent">
+            </div>
+        </div>
+
+        <h1 class="headline">...é que você precisa de <span>planilhas</span> chatas para dominar seus números.</h1>
+        
+        <div class="slide2-subtxt">
+            Com a <b>Inteligência Artificial do Bilent</b>, você só fala o que vendeu. O sistema identifica o caixa, baixa o estoque e calcula o lucro na mesma hora.
+        </div>
+
+        <div class="widget-track">
+            <div class="widget widget-audio">
+                <div class="widget-icon"><i class="ph-fill ph-microphone-stage"></i></div>
+                <div class="widget-text">
+                    "Vendi 2 itens por R$ 150 no cartão"<br>
+                    <span style="color: #c4b5fd; font-size: 16px;">IA traduzindo áudio...</span>
+                </div>
+            </div>
+
+            <i class="ph-bold ph-arrow-right transition-arrow"></i>
+
+            <div class="widget widget-success">
+                <div class="widget-icon"><i class="ph-bold ph-check"></i></div>
+                <div class="widget-text">
+                    <b>Estoque e Lucro atualizados!</b><br>
+                    <span style="color: #6ee7b7; font-size: 16px;">Margem recalculada. Sem digitar nada.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="swipe-hint">
+            Veja o Dashboard Completo <i class="ph-bold ph-arrow-right"></i>
+        </div>
+    </div>
+
+
+    <!-- SLIDE 3: THE CALL TO ACTION -->
+    <div id="slide3" class="carousel-slide">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+        
+        <div class="slide-header">
+            <div class="brand-logo">
+                <img src="../../logo.png" alt="Bilent">
+            </div>
+        </div>
+
+        <h1 class="headline">Assuma o controle financeiro do seu negócio hoje.</h1>
+
+        <!-- Dashboard Premium -->
+        <div class="dashboard-mockup">
+            <div class="mac-bar">
+                <div class="mac-dots">
+                    <div class="mac-dot r"></div>
+                    <div class="mac-dot y"></div>
+                    <div class="mac-dot g"></div>
+                </div>
+                <div class="dash-search"></div>
+            </div>
+            <div class="dash-layout">
+                <div class="dash-sidebar">
+                    <div class="sidebar-brand">
+                        <img src="../../logo.png" alt="Bilent">
+                    </div>
+                    <div class="nav-items">
+                        <div class="nav-item active"><i class="ph-fill ph-squares-four"></i> Visão Geral</div>
+                        <div class="nav-item"><i class="ph-bold ph-shopping-bag"></i> PDV / Vendas</div>
+                        <div class="nav-item"><i class="ph-bold ph-package"></i> Produtos</div>
+                        <div class="nav-item"><i class="ph-bold ph-currency-circle-dollar"></i> Financeiro</div>
+                    </div>
+                </div>
+                <div class="dash-main">
+                    <div class="dash-header">
+                        <div class="dash-title">Visão Geral Financeira</div>
+                        <div class="date-picker"><i class="ph-bold ph-calendar"></i> Últimos 7 dias</div>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Receita Real</div>
+                            <div class="metric-value">R$ 1.450</div>
+                            <div class="metric-trend trend-up"><i class="ph-bold ph-trend-up"></i> +12%</div>
+                        </div>
+                        <div class="metric-card" style="border-left: 3px solid #10b981; background: #f0fdf4;">
+                            <div class="metric-label" style="color: #047857;">Lucro Líquido</div>
+                            <div class="metric-value" style="color: #064e3b;">R$ 1.330</div>
+                            <div class="metric-trend" style="color: #059669;"><i class="ph-bold ph-arrow-up-right"></i> Excelente!</div>
+                        </div>
+                        <div class="metric-card"></div>
+                    </div>
+                    <div class="chart-box">
+                        <div class="chart-bar"></div><div class="chart-bar"></div><div class="chart-bar"></div>
+                        <div class="chart-bar"></div><div class="chart-bar"></div><div class="chart-bar"></div><div class="chart-bar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-action">
+            <div class="btn-cta">TESTAR GRÁTIS - LINK NA BIO</div>
+            <div class="guarantee"><i class="ph-bold ph-lock-key"></i> Sem compromisso. Cancele quando quiser.</div>
+        </div>
+    </div>
+
+</body>
+</html>
